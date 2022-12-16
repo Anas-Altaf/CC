@@ -2,31 +2,52 @@
 #include<windows.h>
 #include<cstdlib>
 #include<ctime>
+#include<conio.h>
 using namespace std;
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
 const int ROW=10,COL=10;
-void board10x10(char board[][COL]);
-void symbolgenrator(char board[][COL]);
-void symbolgenrator2(char board[][COL]);
+//First Perfect Board 
+void FirstBoardGenerator(char board[][COL]);
+char RandSymbolAssigner();
+void SymbolGeneration(char board[][COL]);
 void checker(char board[][COL]);
-void checkedGenrate(char board[][COL]);
+void SymbolGeneration2(char board[][COL]);
+void CheckedGenerater(char board[][COL]);
+void board10x10(char board[][COL]);
+//Further Working
+void swapper(int row,int col,char board[][COL]);
 int main()
 {
 	char board[ROW][COL];
-	symbolgenrator(board);
-	checker(board);
-	checkedGenrate(board);
+	FirstBoardGenerator(board);
+	board10x10(board);
+	int row,col;
+	cout<<"\nSelect Row and Column to Swap:\n";
+	cout<<"\nEnter Row Number = ";cin>>row;
+	cout<<"\nEnter Column Number = ";cin>>col;
+	swapper(row,col,board);
 	board10x10(board);
 	system("pause");
 	return 0;
 }
-void symbolgenrator(char board[ROW][COL])
+void FirstBoardGenerator(char board[][COL])
+{
+	SymbolGeneration(board);
+	checker(board);
+	CheckedGenerater(board);
+}
+//First Perfect Board Generation Functions
+void SymbolGeneration(char board[ROW][COL])
 {
 	srand(time(0));
 	for(int i=0;i<ROW;i++)
 	{
 		for(int j=0;j<COL;j++)
 		{	
-			board[i][j]=(rand()%5)+35;
+			board[i][j]=RandSymbolAssigner();
 		}
 	}
 }
@@ -51,7 +72,7 @@ void board10x10(char board[][COL])
 		}
 	}
 }
-void symbolgenrator2(char board[ROW][COL])
+void SymbolGeneration2(char board[ROW][COL])
 {
 	srand(time(0));
 	for(int i=0;i<ROW;i++)
@@ -60,7 +81,7 @@ void symbolgenrator2(char board[ROW][COL])
 		{		
 			{
 				if(board[i][j]==' ')
-					board[i][j]=(rand()%5)+35;
+					board[i][j]=RandSymbolAssigner();
 			}
 		}
 	}
@@ -73,26 +94,93 @@ void checker(char board[][COL])
 		{
 			if((board[j][i]==board[j+1][i]&&board[j][i]==board[j+2][i])||(board[i][j]==board[i][j+1]&&board[i][j]==board[i][j+2]))
 			{
-				board[j+1][i]=' ';
-				board[i][j+1]=' ';
+				board[j+2][i]=' ';
+				board[i][j+2]=' ';
 			}
-			
+			if((board[i][j]==board[i+1][j+1]&&board[i][j]==board[i+2][j+2])||(board[i][j]==board[i+1][j-1]&&board[i][j]==board[i+2][j-2]))
+			{
+				board[i+2][j+2]=' ';
+				board[i+2][j-2]=' ';
+			}	
 		}
 	}
 	
 }
-void checkedGenrate(char board[][COL])
+void CheckedGenerater(char board[][COL])
 {
 	for(int i=0;i<ROW;i++)
 	{
 		for(int j=0;j<COL;j++)
+		{
+			while(board[i][j]==' ')
 			{
-				while(board[j][i]==' ')
-				{
-					symbolgenrator2(board);
-					checker(board);
-				}
-				
+				SymbolGeneration2(board);
+				checker(board);
 			}
+				
+		}
+	}
+}
+void CheckedGenerater2(char board[][COL])
+{
+	for(int i=0;i<ROW;i++)
+	{
+		for(int j=0;j<COL;j++)
+		{
+			if(board[i][j]==' ')
+			{
+				CheckedGenerater(board);
+			}
+				
+		}
+	}
+}
+char RandSymbolAssigner()
+{
+	int value=rand()%5;
+	switch(value)
+	{
+		case 0: return '@';
+		case 1: return '#';
+		case 2: return '$';
+		case 3: return '%';
+		case 4: return '+';
+	}
+}
+void swapper(int row,int col,char board[][COL])
+{
+	row=row-1;
+	col=col-1;
+	int keyinput;
+	cout<<"\nEnter Direction = ";
+	cin>>keyinput;
+	bool swapdone=true;
+	while(swapdone)
+	{
+		switch(keyinput= _getch())
+		{
+			case KEY_UP:
+				{
+					if(row!=0)
+					{
+						if((board[row][col]==board[row-1][col+1]&&board[row][col]==board[row-1][col+2])||(board[row][col]==board[row-1][col+1]&&board[row][col]==board[row-1][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row-1][col-2])||(board[row][col]==board[row-2][col]&&board[row][col]==board[row-3][col]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row-1][col];
+								board[row-1][col]=temp;
+								swapdone=false;
+						}
+						else
+						{ cout<<"\nNot Possible!\n";
+						}
+					}
+					else
+					{
+						cout<<"\nNot Possible!\n";
+					}
+				}
+				break;
+				
+		}
 	}
 }
