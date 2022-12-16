@@ -53,6 +53,7 @@ void SymbolGeneration(char board[ROW][COL])
 }
 void board10x10(char board[][COL])
 {
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	cout<<"Here is the Board : "<<endl;
 	cout<<".---.---.---.---.---.---.---.---.---.---."<<endl;
 	cout<<"|   |   |   |   |   |   |   |   |   |   |"<<endl;
@@ -61,6 +62,33 @@ void board10x10(char board[][COL])
 		cout<<"| ";
 		for(int j=0;j<COL;j++)
 		{
+			switch (board[i][j])
+			   {
+			   case '#':
+				SetConsoleTextAttribute(h, 9);
+				break;
+			   case '@':
+				SetConsoleTextAttribute(h, 10);
+				break;
+			   case '$':
+				SetConsoleTextAttribute(h, 11);
+				break;
+			   case '%':
+				SetConsoleTextAttribute(h, 12);
+				break;
+			   case '+':
+				SetConsoleTextAttribute(h, 13);
+				break;
+				case '&':
+				SetConsoleTextAttribute(h, 13);
+				break;
+				case ')':
+				SetConsoleTextAttribute(h, 13);
+				break;
+				case '=':
+				SetConsoleTextAttribute(h, 13);
+				break;
+			   }
 			cout<<board[i][j]<<" | ";	
 		}
 		if(i==ROW-1)
@@ -137,7 +165,7 @@ void CheckedGenerater2(char board[][COL])
 }
 char RandSymbolAssigner()
 {
-	int value=rand()%5;
+	int value=rand()%8;
 	switch(value)
 	{
 		case 0: return '@';
@@ -145,6 +173,9 @@ char RandSymbolAssigner()
 		case 2: return '$';
 		case 3: return '%';
 		case 4: return '+';
+		case 5: return '&';
+		case 6: return ')';
+		case 7: return '=';
 	}
 }
 void swapper(int row,int col,char board[][COL])
@@ -157,6 +188,10 @@ void swapper(int row,int col,char board[][COL])
 	bool swapdone=true;
 	while(swapdone)
 	{
+		swapdone=true;
+		cout<<"\nSelect Row and Column to Swap:\n";
+		cout<<"\nEnter Row Number = ";cin>>row;
+		cout<<"\nEnter Column Number = ";cin>>col;
 		switch(keyinput= _getch())
 		{
 			case KEY_UP:
@@ -164,6 +199,13 @@ void swapper(int row,int col,char board[][COL])
 					if(row!=0)
 					{
 						if((board[row][col]==board[row-1][col+1]&&board[row][col]==board[row-1][col+2])||(board[row][col]==board[row-1][col+1]&&board[row][col]==board[row-1][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row-1][col-2])||(board[row][col]==board[row-2][col]&&board[row][col]==board[row-3][col]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row-1][col];
+								board[row-1][col]=temp;
+								swapdone=false;
+						}
+						else if((board[row-1][col]==board[row][col+1]&&board[row-1][col]==board[row][col+2])||(board[row-1][col]==board[row][col-1]&&board[row-1][col]==board[row][col-2])||(board[row-1][col]==board[row+1][col]&&board[row-1][col]==board[row+2][col])||(board[row-1][col]==board[row][col-1]&&board[row-1][col]==board[row][col+1]))
 						{
 							char temp=board[row][col];
 								board[row][col]=board[row-1][col];
@@ -179,8 +221,63 @@ void swapper(int row,int col,char board[][COL])
 						cout<<"\nNot Possible!\n";
 					}
 				}
-				break;
-				
+			break;
+			case KEY_RIGHT:
+				{
+					if(col!=COL-1)
+					{
+						if((board[row][col]==board[row-1][col+1]&&board[row][col]==board[row-2][col+1])||(board[row][col]==board[row][col+2]&&board[row][col]==board[row][col+3])||(board[row][col]==board[row+1][col+1]&&board[row][col]==board[row+2][col+1])||(board[row][col]==board[row-1][col+1]&&board[row][col]==board[row+1][col+1]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row][col+1];
+								board[row][col+1]=temp;
+								swapdone=false;
+						}
+						else if((board[row][col+1]==board[row][col-1]&&board[row][col+1]==board[row][col-2])||(board[row][col+1]==board[row-1][col]&&board[row][col+1]==board[row-2][col])||(board[row][col+1]==board[row+1][col]&&board[row][col+1]==board[row+2][col])||(board[row][col+1]==board[row][col]&&board[row][col+1]==board[row][col+2]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row][col+1];
+								board[row][col+1]=temp;
+								swapdone=false;
+						}
+						else
+						{ cout<<"\nNot Possible!\n";
+						}
+					}
+					else
+					{
+						cout<<"\nNot Possible!\n";
+					}
+				}
+			break;
+			case KEY_LEFT:
+				{
+					if(col!=COL-1)
+					{
+						if((board[row][col]==board[row][col-2]&&board[row][col]==board[row][col-3])||(board[row][col]==board[row+1][col-1]&&board[row][col]==board[row+2][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row-2][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row+1][col-1]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row][col+1];
+								board[row][col+1]=temp;
+								swapdone=false;
+						}
+						else if((board[row][col-1]==board[row][col+1]&&board[row][col-1]==board[row][col+2])||(board[row][col-1]==board[row-1][col]&&board[row][col-1]==board[row-2][col])||(board[row][col-1]==board[row+1][col]&&board[row][col-1]==board[row+2][col])||(board[row][col-1]==board[row][col]&&board[row][col-1]==board[row][col+1]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row][col+1];
+								board[row][col+1]=temp;
+								swapdone=false;
+						}
+						else
+						{ cout<<"\nNot Possible!\n";
+						}
+					}
+					else
+					{
+						cout<<"\nNot Possible!\n";
+					}
+				}
+			break;
 		}
 	}
 }
