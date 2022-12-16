@@ -23,7 +23,6 @@ int main()
 {
 	char board[ROW][COL];
 	FirstBoardGenerator(board);
-	board10x10(board);
 	int row,col;
 	cout<<"\nSelect Row and Column to Swap:\n";
 	cout<<"\nEnter Row Number = ";cin>>row;
@@ -80,13 +79,10 @@ void board10x10(char board[][COL])
 				SetConsoleTextAttribute(h, 13);
 				break;
 				case '&':
-				SetConsoleTextAttribute(h, 13);
-				break;
-				case ')':
-				SetConsoleTextAttribute(h, 13);
+				SetConsoleTextAttribute(h, 14);
 				break;
 				case '=':
-				SetConsoleTextAttribute(h, 13);
+				SetConsoleTextAttribute(h, 15);
 				break;
 			   }
 			cout<<board[i][j]<<" | ";	
@@ -174,8 +170,8 @@ char RandSymbolAssigner()
 		case 3: return '%';
 		case 4: return '+';
 		case 5: return '&';
-		case 6: return ')';
-		case 7: return '=';
+		case 6: return '=';
+		default:return '+';
 	}
 }
 void swapper(int row,int col,char board[][COL])
@@ -252,24 +248,53 @@ void swapper(int row,int col,char board[][COL])
 			break;
 			case KEY_LEFT:
 				{
-					if(col!=COL-1)
+					if(col!=0)
 					{
 						if((board[row][col]==board[row][col-2]&&board[row][col]==board[row][col-3])||(board[row][col]==board[row+1][col-1]&&board[row][col]==board[row+2][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row-2][col-1])||(board[row][col]==board[row-1][col-1]&&board[row][col]==board[row+1][col-1]))
 						{
 							char temp=board[row][col];
-								board[row][col]=board[row][col+1];
-								board[row][col+1]=temp;
+								board[row][col]=board[row][col-1];
+								board[row][col-1]=temp;
 								swapdone=false;
 						}
 						else if((board[row][col-1]==board[row][col+1]&&board[row][col-1]==board[row][col+2])||(board[row][col-1]==board[row-1][col]&&board[row][col-1]==board[row-2][col])||(board[row][col-1]==board[row+1][col]&&board[row][col-1]==board[row+2][col])||(board[row][col-1]==board[row][col]&&board[row][col-1]==board[row][col+1]))
 						{
 							char temp=board[row][col];
-								board[row][col]=board[row][col+1];
-								board[row][col+1]=temp;
+								board[row][col]=board[row][col-1];
+								board[row][col-1]=temp;
 								swapdone=false;
 						}
 						else
 						{ cout<<"\nNot Possible!\n";
+						}
+					}
+					else
+					{
+						cout<<"\nNot Possible!\n";
+					}
+				}
+			break;
+			case KEY_DOWN:
+				{
+					if(row!=ROW-1)
+					{
+						if((board[row][col]==board[row+2][col]&&board[row][col]==board[row+3][col])||(board[row][col]==board[row+1][col+1]&&board[row][col]==board[row+1][col+2])||(board[row][col]==board[row+1][col-1]&&board[row][col]==board[row+1][col-2])||(board[row][col]==board[row+1][col+1]&&board[row][col]==board[row+1][col-1]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row-1][col];
+								board[row-1][col]=temp;
+								swapdone=false;
+						}
+						else if((board[row+1][col]==board[row-1][col]&&board[row+1][col]==board[row-2][col])||(board[row+1][col]==board[row][col-1]&&board[row+1][col]==board[row][col-2])||(board[row+1][col]==board[row][col+1]&&board[row+1][col]==board[row][col+2])||(board[row+1][col]==board[row][col-1]&&board[row+1][col]==board[row][col+1]))
+						{
+							char temp=board[row][col];
+								board[row][col]=board[row-1][col];
+								board[row-1][col]=temp;
+								swapdone=false;
+						}
+						else
+						{
+							cout<<"\nNot Possible!\n";
 						}
 					}
 					else
