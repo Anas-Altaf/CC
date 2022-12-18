@@ -1,25 +1,28 @@
 #include<iostream>
 #include<windows.h>
 #include<cstdlib>
-#include<stdlib.h>
 #include<ctime>
 #include<string>
 #include<conio.h>
 #include<iomanip>
+#include<cstring>
+#include<fstream>
 #include"headerfile.hpp"
 using namespace std;
+const int ROW = 10, COL = 10;
+char board[ROW][COL];
 const int KEY_UP = 72;
 const int KEY_DOWN = 80;
 const int KEY_LEFT = 75;
 const int KEY_RIGHT = 77;
-void FirstBoardGenerator(char board[][COL])
+void FirstBoardGenerator()
 {
-	SymbolGeneration(board);
-	checker(board);
-	CheckedGenerater(board);
+	SymbolGeneration();
+	checker();
+	CheckedGenerater();
 }
 //First Perfect Board Generation Functions
-void SymbolGeneration(char board[][COL])
+void SymbolGeneration()
 {
 	srand(time(0));
 	for (int i = 0;i<ROW;i++)
@@ -30,18 +33,19 @@ void SymbolGeneration(char board[][COL])
 		}
 	}
 }
-void board10x10(char board[][COL])
+void board10x10()
 {
 	system("cls");
+	//OUTPUT Console Modification
 	static CONSOLE_FONT_INFOEX  fontex;
 	fontex.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	GetCurrentConsoleFontEx(hOut, 0, &fontex);
-	fontex.FontWeight = 700;
-	fontex.dwFontSize.X = 20;
-	fontex.dwFontSize.Y = 20;
+	fontex.FontWeight = 1000;
 	SetCurrentConsoleFontEx(hOut, NULL, &fontex);
+	//Coloring
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	//Board Printing
 	cout << "Here is the Board : " << endl;
 	cout << "    1   2   3   4   5   6   7   8   9   10\n";
 	cout << "  .---.---.---.---.---.---.---.---.---.---." << endl;
@@ -81,7 +85,10 @@ void board10x10(char board[][COL])
 			cout << board[i][j] << " | ";
 		}
 		if (i == ROW - 1)
+		{
 			cout << endl << "  |...|...|...|...|...|...|...|...|...|...|" << endl;
+			cout << "    1   2   3   4   5   6   7   8   9   10\n";
+		}
 		else
 		{
 			cout << endl << "  |___|___|___|___|___|___|___|___|___|___|";
@@ -89,7 +96,8 @@ void board10x10(char board[][COL])
 		}
 	}
 }
-void SymbolGeneration2(char board[][COL])
+//Give symbol if find Space ' '.
+void SymbolGeneration2()
 {
 	srand(time(0));
 	for (int i = 0;i<ROW;i++)
@@ -103,7 +111,8 @@ void SymbolGeneration2(char board[][COL])
 		}
 	}
 }
-void checker(char board[][COL])
+//startings Matching Checker
+void checker()
 {
 	for (int i = 0;i<ROW;i++)
 	{
@@ -123,7 +132,8 @@ void checker(char board[][COL])
 	}
 
 }
-void CheckedGenerater(char board[][COL])
+//Rechacking and Assigning in case of Again Space' '. Making Unique Board
+void CheckedGenerater()
 {
 	for (int i = 0;i<ROW;i++)
 	{
@@ -131,14 +141,15 @@ void CheckedGenerater(char board[][COL])
 		{
 			while (board[i][j] == ' ')
 			{
-				SymbolGeneration2(board);
-				checker(board);
+				SymbolGeneration2();
+				checker();
 			}
 
 		}
 	}
 }
-void CheckedGenerater2(char board[][COL])
+//Last Time Checking For a Unique and Perfect Board
+void CheckedGenerater2()
 {
 	for (int i = 0;i<ROW;i++)
 	{
@@ -146,12 +157,13 @@ void CheckedGenerater2(char board[][COL])
 		{
 			if (board[i][j] == ' ')
 			{
-				CheckedGenerater(board);
+				CheckedGenerater();
 			}
 
 		}
 	}
 }
+//Symbol Giving
 char RandSymbolAssigner()
 {
 	int value = rand() % 8;
@@ -169,27 +181,110 @@ char RandSymbolAssigner()
 }
 //Ended First Perfect Board Generator
 //Swapping And Replacing Symbols
-void swap_replace(int &moves, int &scores, char board[][COL])
+void swap_replace(int &moves, int &scores)
 {
-	int row, col;
-	bool swapdone = true;
+	int row = 0, col = 0;
+	board10x10();
 	while (moves > 0)
 	{
-		board10x10(board);
+		cout << "         ====" << endl;
+		cout << "Scores :| " << scores << " |" << endl;
+		cout << "         ====" << endl;
+		cout << "         ====" << endl;
+		cout << "Moves : | " << moves << " |" << endl;
+		cout << "         ====" << endl;
 		cout << "\nEnter Row Number = ";cin >> row;
 		cout << "\nEnter Column Number = ";cin >> col;
 		row = row - 1;
 		col = col - 1;
-		swapper(row,col,board);
-		board10x10(board);
-		--moves;
-		int lastRow = 0;
+		cout << "Press ENTER to Shuffle >> 1 Move will be Decreased\n                  /\\ ";
+		cout << "\nEnter Direction <    > ";
+		cout << "\n                  \\/ \n";
+		int ch = 0;
+		{
+			char temp = 0;
+			ch = _getch();//First Getting Main Value of Keyboard 224 (it took me 2 days to understand)
+			ch = _getch();//Now Getting KeyValue of Keyboard
+			switch (ch)
+			{
+				moves--;
+			case KEY_UP:
+			{
+				if (row != 0)
+				{
+					swap(board[row][col], board[row - 1][col]);
+				}
+				else
+				{
+					cout << "\nNot Possible! Upward Try Again!\n";
+				}
+			}
+			break;
+			case KEY_RIGHT:
+			{
+				if (col != COL - 1)
+				{
+					swap(board[row][col], board[row][col + 1]);
+				}
+				else
+				{
+					cout << "\nNot Possible! Right Side Try Again!\n";
+				}
+			}
+			break;
+			case KEY_LEFT:
+			{
+				if (col != 0)
+				{
+					swap(board[row][col], board[row][col - 1]);
+				}
+				else
+				{
+					cout << "\nNot Possible! Left Side Try Again!\n";
+				}
+			}
+			break;
+			case KEY_DOWN:
+			{
+				if (row != ROW - 1)
+				{
+					swap(board[row][col], board[row + 1][col]);
+				}
+				else
+				{
+					cout << "\nNot Possible! Downward Try Again!\n";
+				}
+			}
+			break;
+			case 13:
+			{
+				if (ch == 13)
+				{
+					//Perfect Board Generator
+					FirstBoardGenerator();
+				}
+			}
+			}
+		}
+		SwapRows(scores);
+		board10x10();
+	}
+}
+void SwapRows(int &scores)
+{
+	int lastRow = 0;
+	bool checker = false, chk1, chk2, chk3, chk4;
+	while (checker == false)
+	{
+		chk1 = chk2 = chk3 = chk4 = false;
+		//Value will Swap to down in that Row
 		for (int i = 0;i < ROW;i++)
 		{
 			for (int j = 0;j < COL;j++)
 			{
 				if (board[i][j] == board[i][j + 1] && board[i][j] == board[i][j + 2])
 				{
+					chk1 = true;
 					scores += 10;
 					lastRow = i;
 					while (lastRow != 0)
@@ -205,6 +300,7 @@ void swap_replace(int &moves, int &scores, char board[][COL])
 				}
 				else if (board[i][j] == board[i + 1][j] && board[i][j] == board[i + 2][j])
 				{
+					chk2 = true;
 					scores += 10;
 					lastRow = i / 3;
 					while (lastRow > 0)
@@ -233,31 +329,7 @@ void swap_replace(int &moves, int &scores, char board[][COL])
 				}
 				else if (board[i][j] == board[i + 1][j + 1] && board[i][j] == board[i + 2][j + 2])
 				{
-					scores += 20;
-					lastRow = i;
-					while (lastRow != 0)
-					{
-						board[lastRow][j] = board[lastRow-1][j];
-						--lastRow;
-					}
-					board[lastRow][j] = RandSymbolAssigner();
-					lastRow = i + 1;
-					while (lastRow != 0)
-					{
-						board[lastRow][j + 1] = board[lastRow-1][j + 1];
-						--lastRow;
-					}
-					board[lastRow][j + 1] = RandSymbolAssigner();
-					lastRow = i + 2;
-					while (lastRow != 0)
-					{
-						board[lastRow][j + 2] = board[lastRow-1][j + 2];
-						--lastRow;
-					}
-					board[lastRow][j + 2] = RandSymbolAssigner();
-				}
-				else if (board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2])
-				{
+					chk3 = true;
 					scores += 20;
 					lastRow = i;
 					while (lastRow != 0)
@@ -269,7 +341,33 @@ void swap_replace(int &moves, int &scores, char board[][COL])
 					lastRow = i + 1;
 					while (lastRow != 0)
 					{
-						board[lastRow][j - 1] = board[lastRow-1][j - 1];
+						board[lastRow][j + 1] = board[lastRow - 1][j + 1];
+						--lastRow;
+					}
+					board[lastRow][j + 1] = RandSymbolAssigner();
+					lastRow = i + 2;
+					while (lastRow != 0)
+					{
+						board[lastRow][j + 2] = board[lastRow - 1][j + 2];
+						--lastRow;
+					}
+					board[lastRow][j + 2] = RandSymbolAssigner();
+				}
+				else if (board[i][j] == board[i + 1][j - 1] && board[i][j] == board[i + 2][j - 2])
+				{
+					chk4 = true;
+					scores += 20;
+					lastRow = i;
+					while (lastRow != 0)
+					{
+						board[lastRow][j] = board[lastRow - 1][j];
+						--lastRow;
+					}
+					board[lastRow][j] = RandSymbolAssigner();
+					lastRow = i + 1;
+					while (lastRow != 0)
+					{
+						board[lastRow][j - 1] = board[lastRow - 1][j - 1];
 						--lastRow;
 					}
 					board[lastRow][j - 1] = RandSymbolAssigner();
@@ -283,14 +381,24 @@ void swap_replace(int &moves, int &scores, char board[][COL])
 				}
 			}
 		}
+		//Checkers using to run condition checker until Any Combination Possible!
+		//it will make SwapRows Function Run and Add Scores until until Any Combination Possible!
+		if (chk1 == false && chk2 == false && chk3 == false && chk4 == false)
+		{
+			checker = false;
+		}
+		else
+		{
+			checker = true;
+		}
 	}
 }
-//Game Runner
-void PlayGame(char board[][COL])
+//Game Runner and Mode Selection
+void PlayGame()
 {
-	int mode, easyScore, hardScore;
-	string name;
-	cout << "\nPlease Enter Your First Name Here = ";
+	int mode, easyScore, hardScore, score;
+	char name[50];
+	cout << "\nPlease Enter Your Name (Only First Name) Here = ";
 	cin >> name;
 	cout << "\nModes\n";
 	cout << "1- EASY-MODE ->[ Board = 8x8 - Timer = 60 Seconds - Candies = 5 - Moves = 30 ]\n";
@@ -299,166 +407,36 @@ void PlayGame(char board[][COL])
 	cin >> mode;
 	switch (mode)
 	{
-	case 1:	easyScore = EasyMode(board);
+	case 1:	easyScore = EasyMode();
 		break;
-	case 2:	hardScore = HardMode(board);
+	case 2:	hardScore = HardMode();
 		break;
 	default: cout << "\ninvalid Input!\n";
 	}
 	if (mode == 1)
+	{
 		cout << "\nYour Total Scores of EASY-MODE = " << easyScore << endl;
+		score = easyScore;
+	}
 	else if (mode == 2)
+	{
 		cout << "\nYour Total Scores of HARD-MODE = " << hardScore << endl;
+		score = hardScore;
+	}
 	else
 	{
 		cout << "Invalid Mode Selection !\n";
 	}
+	scoremanager(name, score);
 }
-void swapper(int row,int col,char board[][COL])
-{
-	int keyinput=0;
-	cout << "\n                  /\\ ";
-	cout << "\nEnter Direction <    > ";
-	cout << "\n                  \\/ " << endl;
-	switch (keyinput = getch())
-	{
-	case KEY_UP:
-	{
-		cout << "KEY_UP";
-		if (row != 0)
-		{
-			if ((board[row][col] == board[row - 1][col + 1] && board[row][col] == board[row - 1][col + 2]) || (board[row][col] == board[row - 1][col + 1] && board[row][col] == board[row - 1][col - 1]) || (board[row][col] == board[row - 1][col - 1] && board[row][col] == board[row - 1][col - 2]) || (board[row][col] == board[row - 2][col] && board[row][col] == board[row - 3][col]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-			else if ((board[row - 1][col] == board[row][col + 1] && board[row - 1][col] == board[row][col + 2]) || (board[row - 1][col] == board[row][col - 1] && board[row - 1][col] == board[row][col - 2]) || (board[row - 1][col] == board[row + 1][col] && board[row - 1][col] == board[row + 2][col]) || (board[row - 1][col] == board[row][col - 1] && board[row - 1][col] == board[row][col + 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-			else
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-		}
-		else
-		{
-			cout << "\nNot Possible! Try Again!\n";
-		}
-	}
-	break;
-	case KEY_RIGHT:
-	{
-		cout << "KEY_RIGHT";
-		if (col != COL - 1)
-		{
-			if ((board[row][col] == board[row - 1][col + 1] && board[row][col] == board[row - 2][col + 1]) || (board[row][col] == board[row][col + 2] && board[row][col] == board[row][col + 3]) || (board[row][col] == board[row + 1][col + 1] && board[row][col] == board[row + 2][col + 1]) || (board[row][col] == board[row - 1][col + 1] && board[row][col] == board[row + 1][col + 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col + 1];
-				board[row][col + 1] = temp;
-			}
-			else if ((board[row][col + 1] == board[row][col - 1] && board[row][col + 1] == board[row][col - 2]) || (board[row][col + 1] == board[row - 1][col] && board[row][col + 1] == board[row - 2][col]) || (board[row][col + 1] == board[row + 1][col] && board[row][col + 1] == board[row + 2][col]) || (board[row][col + 1] == board[row][col] && board[row][col + 1] == board[row][col + 2]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col + 1];
-				board[row][col + 1] = temp;
-			}
-			else
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col + 1];
-				board[row][col + 1] = temp;
-			}
-		}
-		else
-		{
-			cout << "\nNot Possible! Try Again!\n";
-		}
-	}
-	break;
-	case KEY_LEFT:
-	{
-		cout << "KEY_LEFT";
-		if (col != 0)
-		{
-			if ((board[row][col] == board[row][col - 2] && board[row][col] == board[row][col - 3]) || (board[row][col] == board[row + 1][col - 1] && board[row][col] == board[row + 2][col - 1]) || (board[row][col] == board[row - 1][col - 1] && board[row][col] == board[row - 2][col - 1]) || (board[row][col] == board[row - 1][col - 1] && board[row][col] == board[row + 1][col - 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col - 1];
-				board[row][col - 1] = temp;
-			}
-			else if ((board[row][col - 1] == board[row][col + 1] && board[row][col - 1] == board[row][col + 2]) || (board[row][col - 1] == board[row - 1][col] && board[row][col - 1] == board[row - 2][col]) || (board[row][col - 1] == board[row + 1][col] && board[row][col - 1] == board[row + 2][col]) || (board[row][col - 1] == board[row][col] && board[row][col - 1] == board[row][col + 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col - 1];
-				board[row][col - 1] = temp;
-			}
-			else
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row][col - 1];
-				board[row][col - 1] = temp;
-			}
-		}
-		else
-		{
-			cout << "\nNot Possible! Try Again!\n";
-		}
-	}
-	break;
-	case KEY_DOWN:
-	{
-		cout << "KEY_DOWN";
-		if (row != ROW - 1)
-		{
-			if ((board[row][col] == board[row + 2][col] && board[row][col] == board[row + 3][col]) || (board[row][col] == board[row + 1][col + 1] && board[row][col] == board[row + 1][col + 2]) || (board[row][col] == board[row + 1][col - 1] && board[row][col] == board[row + 1][col - 2]) || (board[row][col] == board[row + 1][col + 1] && board[row][col] == board[row + 1][col - 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-			else if ((board[row + 1][col] == board[row - 1][col] && board[row + 1][col] == board[row - 2][col]) || (board[row + 1][col] == board[row][col - 1] && board[row + 1][col] == board[row][col - 2]) || (board[row + 1][col] == board[row][col + 1] && board[row + 1][col] == board[row][col + 2]) || (board[row + 1][col] == board[row][col - 1] && board[row + 1][col] == board[row][col + 1]))
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-			else
-			{
-				char temp = board[row][col];
-				board[row][col] = board[row - 1][col];
-				board[row - 1][col] = temp;
-			}
-		}
-		else
-		{
-			cout << "\nNot Possible! Try Again!\n";
-		}
-	}
-	break;
-	}
-	keyinput = 0;
-}
-int HardMode(char board[][COL])
+int HardMode()
 {
 	cout << "\nHard Mode Started!\n";
 	int moves = 15, timer = 60, scores = 0;
-	
+
 	while (moves>0)
 	{
-		cout << "         ====" << endl;
-		cout << "Scores :| " << scores << " |" << endl;
-		cout << "         ====" << endl;
-		cout << "         ====" << endl;
-		cout << "Moves : | " << moves << " |" << endl;
-		cout << "         ====" << endl;
-		swap_replace(moves, scores, board); break;
+		swap_replace(moves, scores); break;
 	}
 	if (moves == 0)
 		cout << "\nNo Moves Left ! ;)\n";
@@ -466,9 +444,9 @@ int HardMode(char board[][COL])
 		cout << "\nGame Over! ;)!\n";
 	return scores;
 }
-int EasyMode(char board[][COL])
+int EasyMode()
 {
-	FirstBoardGenerator(board);
+	FirstBoardGenerator();
 	cout << "\nEasy Mode Started!\n";
 	return 0;
 }
@@ -511,6 +489,86 @@ void Instructions()
 }
 void HighScores()
 {
-	cout << "\nThe High Scores are as Under: 450 " << endl;
+	string output1, output2, output3;
+	ofstream fout;
+	ifstream fin;
+	cout << "\nThe High Scores are :" << endl;
+	//1st
+	fin.open("score1.txt");
+	// Execute a loop until EOF (End of File)
+	while (getline(fin, output1))
+	{
+		cout << output1 << endl;
+	}
+	fin.close();
+	//2nd
+	fin.open("score2.txt");
+	// Execute a loop until EOF (End of File)
+	while (getline(fin, output2))
+	{
+		cout << output2 << endl;
+	}
+	fin.close();
+	//3rd
+	fin.open("score3.txt");
+	// Execute a loop until EOF (End of File)
+	while (getline(fin, output1))
+	{
+		cout << output3 << endl;
+	}
+	fin.close();
 
+}
+//Score
+void scoremanager(char name[], int score)
+{
+	int scoremax1 = 0, scoremax2 = 0, scoremax3 = 0;
+	string name1, name2, name3;
+	ofstream fout;
+	ifstream fin;
+	if (score>scoremax1)
+	{
+		scoremax3 = scoremax2;
+		scoremax2 = scoremax1;
+		scoremax1 = score;
+		name3 = name2;
+		name2 = name1;
+		name1 = name;
+		//1st
+		fout.open("score1.txt");
+		fout << name1 << "\t:\t" << scoremax1 << endl;   //write data to the file
+		fout.close();
+		//2nd
+		fout.open("score2.txt");
+		fout << name2 << "\t:\t" << scoremax2 << endl;   //write data to the file
+		fout.close();
+		//3rd
+		fout.open("score3.txt");
+		fout << name3 << "\t:\t" << scoremax3 << endl;   //write data to the file
+		fout.close();
+	}
+	else if (score>scoremax2)
+	{
+		scoremax3 = scoremax2;
+		scoremax2 = score;
+		name3 = name2;
+		name2 = name;
+		//2nd
+		fout.open("score2.txt");
+		fout << name2 << "\t:\t" << scoremax2 << endl;   //write data to the file
+		fout.close();
+		//3rd
+		fout.open("score3.txt");
+		fout << name3 << "\t:\t" << scoremax3 << endl;   //write data to the file
+		fout.close();
+	}
+	else if (score>scoremax3)
+	{
+		scoremax3 = score;
+		name3 = name;
+		//3rd
+		fout.open("score3.txt");
+		fout << name3 << "\t:\t" << scoremax3 << endl;   //write data to the file
+		fout.close();
+	}
 }
