@@ -1,27 +1,27 @@
 #ifndef headerfile
 #define headerfile
-//Main Array
-const int ROW = 10, COL = 10;
 //First Perfect Board 
-void FirstBoardGenerator(char board[][COL]);
 char RandSymbolAssigner();
-void SymbolGeneration(char board[][COL]);
-void checker(char board[][COL]);
-void SymbolGeneration2(char board[][COL]);
-void CheckedGenerater(char board[][COL]);
+void SymbolGeneration();
+void checker();
+void SymbolGeneration2();
+void CheckedGenerater();
+void FirstBoardGenerator();
 //Board
-void board10x10(char board[][COL]);
+void board10x10();
 //Modes
-int EasyMode(char board[][COL]);
-int HardMode(char board[][COL]);
+int EasyMode();
+int HardMode();
 //Further Working
-void swapper(int row, int col, char board[][COL]);
+void SwapRows(int &scores);
+void swap_replace(int &moves, int &scores);
+void PlayGame();
 void GameName();
 void SelectOption();
 void Credits();
+void scoremanager(char name[], int score);
 void HighScores();
 void Instructions();
-void swap_replace(int &moves, int &scores, char board[][COL]);
-void Instructions();
-void PlayGame(char board[][COL]);
+
+
 #endif // !headerfile
